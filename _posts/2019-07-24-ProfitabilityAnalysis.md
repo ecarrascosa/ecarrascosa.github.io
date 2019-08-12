@@ -27,6 +27,7 @@ Big Questions
 
 Python code block:
 ```Python
+
    import numpy as np
 
     def test(x,y):
@@ -34,10 +35,10 @@ Python code block:
       return z
 ```
 
-
 R code block:
 
-```
+```r
+
 library(tidyverse)
 df <- read_csv('data_2009.csv')
 
@@ -51,10 +52,11 @@ DATA9 <- mutate(DATA9, per_customer = rnk_customer / count_customer * 100)
 ```
 
 R code block:
-``r
+```r
+
 head(filter(DATA9, per_customer > 20), n = 1)
 
 ggplot(DATA9) +
 geom_line(aes(x=per_customer, y=per_profit9)) +
 labs(x = "Customer Percentile", y = "Cumulative\nProfit\nPercentile")
-``
+```
