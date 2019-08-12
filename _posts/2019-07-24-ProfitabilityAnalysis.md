@@ -26,18 +26,18 @@ Big Questions
 3. What does our profitability look like across the customer base?
 
 Python code block:
-'''
-    import numpy as np
+```Python
+   import numpy as np
 
     def test(x,y):
       z = np.sum(x,y)
       return z
-'''
+```
 
 
 R code block:
 
-'''
+```
 library(tidyverse)
 df <- read_csv('data_2009.csv')
 
@@ -48,13 +48,13 @@ DATA9 <- mutate(DATA9, cum_profit9 = cumsum(profit9))
 DATA9 <- mutate(DATA9, per_profit9 = cum_profit9 / sum_profit9 * 100)
 DATA9 <- mutate(DATA9, rnk_customer = row_number())
 DATA9 <- mutate(DATA9, per_customer = rnk_customer / count_customer * 100)
-'''
+```
 
 R code block:
-'''r
+``r
 head(filter(DATA9, per_customer > 20), n = 1)
 
 ggplot(DATA9) +
 geom_line(aes(x=per_customer, y=per_profit9)) +
 labs(x = "Customer Percentile", y = "Cumulative\nProfit\nPercentile")
-'''
+``
