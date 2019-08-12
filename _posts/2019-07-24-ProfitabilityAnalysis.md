@@ -26,8 +26,7 @@ Big Questions
 3. What does our profitability look like across the customer base?
 
 Python code block:
-```Python
-
+```python
    import numpy as np
 
     def test(x,y):
@@ -38,7 +37,6 @@ Python code block:
 R code block:
 
 ```r
-
 library(tidyverse)
 df <- read_csv('data_2009.csv')
 
@@ -53,7 +51,6 @@ DATA9 <- mutate(DATA9, per_customer = rnk_customer / count_customer * 100)
 
 R code block:
 ```r
-
 head(filter(DATA9, per_customer > 20), n = 1)
 
 ggplot(DATA9) +
