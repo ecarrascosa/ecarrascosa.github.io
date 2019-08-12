@@ -27,11 +27,12 @@ Big Questions
 
 Python code block:
 ''' Python
+
     import numpy as np
 
     def test(x,y):
-    z = np.sum(x,y)
-    return z
+      z = np.sum(x,y)
+      return z
 '''
 'x+y'
 
