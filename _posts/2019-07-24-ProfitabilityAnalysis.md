@@ -25,6 +25,15 @@ Big Questions
 2. Does going online lead to higher profits?
 3. What does our profitability look like across the customer base?
 
+Python code block:
+''' Python
+    import numpy as np
+
+    def test(x,y):
+    z = np.sum(x,y)
+    return z
+'''
+'x+y'
 
 R code block:
 ''' r
