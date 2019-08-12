@@ -26,8 +26,7 @@ Big Questions
 3. What does our profitability look like across the customer base?
 
 Python code block:
-'''python
-
+'''
     import numpy as np
 
     def test(x,y):
@@ -38,7 +37,7 @@ Python code block:
 
 R code block:
 
-'''r
+'''
 library(tidyverse)
 df <- read_csv('data_2009.csv')
 
