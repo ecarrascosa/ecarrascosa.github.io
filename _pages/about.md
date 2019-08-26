@@ -7,4 +7,4 @@ header:
   image: "/images/fort_point.png"
 ---
 
-I'm an aspiring data scientist with a strong interest in solving problems using machine learning algorithms and techniques
+I'm an aspiring data scientist and master in business analytics and business intelligence.

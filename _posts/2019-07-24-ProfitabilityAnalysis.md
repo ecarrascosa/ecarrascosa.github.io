@@ -1,15 +1,18 @@
 ---
 title: "Analysis of Pilgrim Bank Case Study"
 date: 2019-07-24
-tags: [machine learning, data science]
+tags: [Profit Analytics]
 header:
   image:
 excerpt: "Data Mining for Business Analytics"
 ---
-# H1 Heading
-Analysis of Pilgrim Bank Case Study
+# Getting insights into profitability
 
-## H2 Heading
+Getting insights into your profitability can help you devise strategies to maximize profits. Let's start by answering some basic questions.
+
+## Insights into variation in profitability across customers
+
+To analyze the variation in profitability across customers we use a sample of 30,000 customers and their profits for last year. After handling the missing data and with the help of R's tidy verse library we can plot the cumulative profit percentile across customers. 
 
 ### H3 Heading
 
