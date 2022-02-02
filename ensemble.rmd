@@ -1,17 +1,15 @@
 ---
-title: "Exploratory Analysis Zillow"
+title: "Exploratory"
 output: 
   html_document:
     fig_height: 4
     fig_width: 7
     theme: cosmo
 ---
-install.packages('corrplot')
-install.packages('leaflet')
 
 
 ### Welcome and good luck to you all at Zillow's Home Value prediction!
-#### with a price pool of 1.2 Million Dollar
+### with a price pool of 1.2 Million Dollar
 
 
 
