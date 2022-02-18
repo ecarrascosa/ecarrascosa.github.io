@@ -14,7 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # remove scientific notiation
 options(scipen = 100)
-
 ```
 ### Welcome to this marketing data mining prediction project!
 

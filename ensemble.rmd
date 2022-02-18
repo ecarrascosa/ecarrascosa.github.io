@@ -1,5 +1,5 @@
 ---
-title: "Exploratory"
+title: "Explore"
 output: 
   html_document:
     fig_height: 4
