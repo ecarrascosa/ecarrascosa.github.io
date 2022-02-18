@@ -1,0 +1,316 @@
+---
+title: "Identifying the VIP's"
+author: "Eduardo Carrascosa"
+date: "2/2/2022"
+output: 
+  html_document:
+    fig_height: 4
+    fig_width: 7
+    theme: cosmo
+---
+
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# remove scientific notiation
+options(scipen = 100)
+
+```
+### Welcome to this marketing data mining prediction project!
+
+In this exercise, we are asked to “identify” the VIP customers in the decision set of 30,000 customers. Data for the decision set of customers are found in etots_decision.csv. We will do this based on a model that we develop using the data in etots_training.csv, which contains the same type of data for another random sample of 30,000 customers.
+
+We must decide which of the 30,000 customers in the decision set to designate for VIP treatment.
+
+### Discussion Questions
+
+1.    Your score would be zero if no one is assigned for VIP treatment (i.e., no incremental revenue and no incremental cost). What would be the score if you          designate everyone in the etots training set for VIP treatment? Describe your calculations.
+
+2.    Based on the data in the etots training set, what is the value of perfect information (i.e., the difference in scores between designating everyone for VIP       treatment vs. designating only those who “deserved” such treatment given their response)? Describe your calculations.
+
+3.    Describe the model you used to identify customers for VIP treatment. 
+      a.    Describe the model and your modeling strategy.
+      b.    What kind of economic analysis did you perform to evaluate your predictive model and select the customers to be assigned to VIP? 
+      c.    What is your projected score? How did you calculate this score?
+
+
+### Prediction Score
+
+Our decisions will be scored as follows:
+
+- We will be charged $3.25 for each VIP treatment;
+
+- We will receive an incremental revenue of $9.80 from each VIP-treated customer who made a purchase during Holiday 2000 (i.e., HOL_REP = 1). 
+
+- Customers receiving regular treatment will not affect your score
+
+The following table summarizes the above rules:
+
+![](https://i.imgur.com/h2E0TTS.png)
+
+
+Let's look at the dataset:
+
+### Read in the data
+```{r load-all-libraries, message=FALSE, results='hide'}
+library(tidyverse)
+library(data.table)
+library(corrplot)
+library(DT)
+library(caret)
+
+
+training_data <- read_csv("etots_training.csv")
+decision_data <- read_csv("etots_decision.csv")
+
+```
+
+```{r include=FALSE} 
+options(tibble.width = Inf)
+```
+
+Lets first have a look at these files:
+
+### Peek at the dataset {.tabset}
+
+#### Training set
+
+There are a total of 36 features per customer. You can scroll the x-axis to see all features.
+
+```{r results='asis', echo=FALSE}
+datatable(head(training_data, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+
+```
+#### Decision set
+
+```{r results='asis', echo=FALSE}
+datatable(head(decision_data, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+
+```
+
+### Renaming the features
+
+The feature names are (lets face it) not really interpretable well. How should you now what "finishedsquarefeet15" is for example. So, I am going to rename them here. This will make working with the dataset a lot easier (more consistency, and shorter names):\
+```{r message=FALSE}
+
+  training_data <- training_data %>%
+  rename(
+    holiday_2020_purchase = HOL_REP, 
+    holiday_2020_total_spend = HOL_MVAL, 
+    holiday_2019_average_order_size = S_99HOL,
+    holiday_2019_total_spend = M_VAL99H, 
+    offseason_2020_average_order_size = S_00OFF,
+    offseason_2020_total_spend = M_VAL00O,
+    recency = REC,
+    tenure = TENURE,
+    self_index =  S_IDX,
+    not_self_index = N_S_INDX,
+    nov_2007 = J_9711, 
+    dec_2007 = J_9712,
+    jan_2008 = J_9801,
+    feb_2008 = J_9802,
+    mar_2008 = J_9803,
+    apr_2008 = J_9804,
+    may_2008 =J_9805,
+    jun_2008 = J_9806,
+    jul_2008 = J_9807,
+    aug_2008 = J_9808,
+    sep_2008 = J_9809,
+    oct_2008 = J_9810,
+    nov_2008 = J_9811,
+    dec_2008 = J_9812,
+    jan_2009 = J_9901,
+    feb_2009 = J_9902,
+    mar_2009 = J_9903,
+    apr_2009 = J_9904,
+    may_2009 = J_9905,
+    jun_2009 = J_9906,
+    jul_2009 = J_9907,
+    aug_2009 = J_9908,
+    sep_2009 = J_9909
+
+  )
+```
+
+### Peek at the renamed dataset {.tabset}
+
+#### Training data
+
+Much better :-). You can scroll the x-axis to see all features. 
+```{r result='asis', echo=FALSE}
+datatable(head(training_data, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+
+```
+### Data Cleaning
+
+Gift and Self have missing data, lets fill with zero.
+```{r message=FALSE, warning=FALSE, results='hide'}
+colSums(is.na(training_data))
+
+training_data <-
+  mutate(training_data, Missing_Self = is.na(Self), Missing_Gift = is.na(Gift)) %>%
+  replace_na(list(Self = 0, Gift = 0))
+```
+
+The holiday_2020_total_spend variable is not available in the decision set so 
+lets remove it from the training data and create the target variable.
+
+```{r}
+training_data <- training_data %>%
+    select(-holiday_2020_total_spend)
+```
+
+How many customer rows in the data?
+```{r}
+n <- nrow(training_data)
+n
+```
+
+### Feature Engineering 
+
+Check if the target variable is balanced - minority class is about 33% of the dataset, mildly imbalanced.
+
+```{r}
+training_data %>%
+  group_by(holiday_2020_purchase) %>%
+  ggplot(aes(x = holiday_2020_purchase, y = n)) +
+  geom_bar(stat = "identity", fill = "red") 
+```
+
+### Create the target variable
+```{r message=FALSE, warning=FALSE, results='hide'}
+target <- factor(training_data$holiday_2020_purchase)
+```
+
+### Partition the data according to the following ratios
+```{r message=FALSE, warning=FALSE, results='hide'}
+training_p <- 0.2
+validation_p <- 0.35
+validation_size <- validation_p * n
+
+set.seed(909439224)
+all_rows = 1:n
+training_index <- createDataPartition(target, p = training_p, list=TRUE)$Resample1
+validation_index <- sample(setdiff(n, training_index), size = validation_size)
+test_index <- setdiff(setdiff(all_rows, training_index), validation_index)
+```
+
+
+### Let's create a training index with a balanced outcome variable
+```{r message=FALSE, warning=FALSE, results='hide'}
+training_downsample <- downSample(training_index, target[training_index], list = FALSE)$x
+training_upsample <- upSample(training_index, target[training_index], list = FALSE)$x
+```
+
+The target variable is now balanced with equal representation of buyers and non-buyers.
+
+```{r }
+training_data %>%
+  slice(training_upsample) %>%
+  ggplot(aes(x = holiday_2020_purchase, y = n)) +
+  geom_bar(stat="identity", fill = "red")
+```
+
+### Normalize the data
+```{r}
+trainig_data <- training_data %>% mutate(
+holiday_2019_average_order_size = scale(holiday_2019_average_order_size),
+holiday_2019_total_spend = scale(holiday_2019_total_spend),
+offseason_2020_average_order_size = scale(offseason_2020_average_order_size),
+offseason_2020_total_spend = scale(offseason_2020_total_spend),
+recency = scale(recency),
+tenure = scale(tenure),
+self_index = factor(self_index),
+not_self_index = factor(not_self_index),
+nov_2007 = factor(nov_2007),
+dec_2007 = factor(dec_2007),
+jan_2008 = factor(jan_2008),
+feb_2008 = factor(feb_2008),
+mar_2008 = factor(mar_2008),
+apr_2008 = factor(apr_2008),
+may_2008 = factor(may_2008),
+jun_2008 = factor(jun_2008),
+jul_2008 = factor(jul_2008),
+aug_2008 = factor(aug_2008),
+sep_2008 = factor(sep_2008),
+oct_2008 = factor(oct_2008),
+nov_2008 = factor(nov_2008),
+dec_2008 = factor(dec_2008),
+jan_2009 = factor(jan_2009),
+feb_2009 = factor(feb_2009),
+mar_2009 = factor(mar_2009),
+apr_2009 = factor(apr_2009),
+may_2009 = factor(may_2009),
+jun_2009 = factor(jun_2009),
+jul_2009 = factor(jul_2009),
+aug_2009 = factor(aug_2009),
+sep_2009 = factor(sep_2009)
+)
+```
+
+## Model development stage
+At this stage we will not use "test set". We will try different models and decide which one is better. After trying different models we will settle on one.
+
+### Model 1: Classification Tree
+
+```{r ct, message=FALSE, warning=FALSE}
+model_1 <- train(
+  factor(holiday_2020_purchase) ~.,
+  data = training_data[training_downsample, ],
+  method = 'rpart'
+)
+
+score_validation <- predict(model_1, newdata = training_data[validation_index, ])
+
+confusionMatrix(score_validation, target[validation_index], positive="1")
+```
+
+
+### Model 2: Random Forest
+
+```{r rf, message=FALSE, warning=FALSE}
+model_2 <- train(
+  factor(holiday_2020_purchase) ~ .,
+  data = training_data[training_downsample, ],
+  method = 'rf'
+)
+
+score_validation <- predict(model_2, newdata = training_data[validation_index, ])
+
+confusionMatrix(score_validation, target[validation_index], positive="1")
+```
+
+### Model 3: Gradient Boosting
+
+```{r gradient, message=FALSE, warning=FALSE}
+model_3 <- train(
+  factor(holiday_2020_purchase) ~ .,
+  data = training_data[training_downsample, ],
+  method = 'xgbTree',
+  verbosity = 0
+)
+
+
+score_validation <- predict(model_3, newdata = training_data[validation_index, ])
+
+confusionMatrix(score_validation, target[validation_index], positive="1")
+```
+## Evaluation stage
+
+Let's use the gradient boosting model which is the highest performing for identifying 
+purchasers in the data for our test set.
+
+```{r prediction, message=FALSE, warning=FALSE}
+score_test <- predict(model_3, newdata = training_data[test_index, ])
+
+confusionMatrix(score_test, target[test_index], positive="1")
+```
+
+## Model Evaluation and Prediction Scoring
+
+- If we assign everyone in the training set to the VIP program we would make only $500 because 20,000 customers who were not purchasers would cost us 20,000 * (-$3.25) = $65,000 and the 10,000 customers who are purchasers would make us 10,000 * $6.55 = $65,500. So $65,500 - $65,000 = $500.
+
+- The value of "perfect information" if our model classifies everyone in the training set correctly our prediction score would be $65,500. (10,000 * $6.55 = $65,500)
+
+- Our best performing model is the gradient boosting model. In our test set we identified 3,806 customers for VIP treatment that were purchasers
+  for a gain of $24,929.30 (3,806 * $6.55 = $24,929.30). Our model also identified a total of 2,558 customers for the VIP treatment that were not purchasers.      This costs our model a total of $8,313.50 (2,558 * 3.25 = $8,313.50). Our total prediction score for our best performing model is $16,615.80 ($24,929.30 -       $8,313.50 = $16,615.80).
