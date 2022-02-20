@@ -59,10 +59,11 @@ library(DT)
 library(caret)
 
 
-training_data <- read_csv("etots_training.csv")
-decision_data <- read_csv("etots_decision.csv")
+training_data <- read_csv("/Users/eduardocarrascosa/Desktop/MS-Analytics/Marketing-Analytics/Final/etots_training.csv")
+decision_data <- read_csv("/Users/eduardocarrascosa/Desktop/MS-Analytics/Marketing-Analytics/Final/etots_decision.csv")
 
 ```
+
 
 ```{r include=FALSE} 
 options(tibble.width = Inf)
