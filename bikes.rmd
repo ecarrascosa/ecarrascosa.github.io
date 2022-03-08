@@ -1,0 +1,397 @@
+---
+title: "bikes"
+author: "Eduardo Carrascosa"
+date: "2/21/2022"
+output: bookdown::html_document2
+tidy: styler
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+  )
+
+# remove scientific notiation
+options(scipen = 100)
+```
+
+```{r install-libraries}
+```
+
+
+```{r install-libraries}
+library(tidyverse)
+library(DT)
+library(caret)
+library(lattice)
+library(lubridate)
+library(scales)
+library(ggthemes)
+
+```
+
+# R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r load-data}
+oct_2020 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202010-divvy-tripdata.csv ")
+nov_2020 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202011-divvy-tripdata.csv ")
+dec_2020 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202012-divvy-tripdata.csv ")
+jan_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202101-divvy-tripdata.csv ")
+feb_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202102-divvy-tripdata.csv ")
+mar_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202103-divvy-tripdata.csv ")
+apr_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202104-divvy-tripdata.csv ")
+may_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202105-divvy-tripdata.csv ")
+jun_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202106-divvy-tripdata.csv ")
+jul_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202107-divvy-tripdata.csv ")
+aug_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202108-divvy-tripdata.csv ")
+sep_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202109-divvy-tripdata.csv ")
+
+```
+## Peek at the datasets {.tabset}
+
+### Oct 2020
+```{r results='asis'}
+datatable(head(oct_2020, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+```
+
+### Nov 2020
+```{r results='asis'}
+datatable(head(nov_2020, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+```
+
+### Dec 2020
+```{r results='asis'}
+datatable(head(dec_2020, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+
+```
+
+### Jan 2021
+```{r results='asis'}
+datatable(head(jan_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+```
+
+### Feb 2021
+```{r results='asis'}
+datatable(head(feb_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+```
+
+### Mar 2021
+```{r results='asis'}
+datatable(head(mar_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+
+```
+
+### Apr 2021
+```{r results='asis'}
+datatable(head(apr_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+
+```
+
+### May 2021
+```{r results='asis'}
+datatable(head(may_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+
+```
+
+### Jun 2021
+```{r results='asis'}
+datatable(head(jun_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+
+```
+
+### Jul 2021
+```{r results='asis'}
+datatable(head(jul_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+
+```
+
+### Aug 2021
+```{r results='asis'}
+datatable(head(aug_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+```
+
+### Sep 2021
+```{r results='asis'}
+datatable(head(sep_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
+
+```
+
+## WRANGLE DATA AND COMBINE INTO A SINGLE FILE
+
+We need to check that all column names match in order to combine all the data into a single file. 
+
+
+```{r column-name-check, results='hide'}
+colnames(oct_2020) 
+colnames(nov_2020)
+colnames(dec_2020)
+colnames(jan_2021)
+colnames(feb_2021)
+colnames(mar_2021)
+colnames(apr_2021)
+colnames(may_2021)
+colnames(jun_2021)
+colnames(jul_2021)
+colnames(aug_2021)
+colnames(sep_2021)
+```
+
+All column names match, now let's peak at the dataset and look for incongruencies.
+
+```{r glimpse, results='hide'}
+glimpse(oct_2020)
+glimpse(nov_2020)
+glimpse(dec_2020)
+glimpse(jan_2021)
+glimpse(feb_2021)
+glimpse(mar_2021)
+glimpse(apr_2021)
+glimpse(may_2021)
+glimpse(jun_2021)
+glimpse(jul_2021)
+glimpse(aug_2021)
+glimpse(sep_2021)
+```
+
+Convert start/end times to datetime to match other files and let's combine the datasets in one
+
+```{r combine-datasets}
+
+oct_2020 <- oct_2020 %>% 
+              mutate(started_at = mdy_hm(started_at))
+
+oct_2020 <- oct_2020 %>%
+                mutate(ended_at = mdy_hm(ended_at))
+
+# Convert station id to character to match other files
+oct_2020 <- oct_2020 %>%
+              mutate(start_station_id = as.character(start_station_id))
+
+oct_2020 <- oct_2020 %>%
+              mutate(end_station_id = as.character(end_station_id))
+
+# Convert start_station_id to character to match other files
+nov_2020 <- mutate(nov_2020, start_station_id = as.character(start_station_id))
+
+# Convert end_station_id to character to match other files
+nov_2020 <- mutate(nov_2020, end_station_id = as.character(end_station_id))
+
+
+# Stack all monthly files into a dataframe
+all_trips <- bind_rows(oct_2020, nov_2020, dec_2020, jan_2021, feb_2021, mar_2021,
+                        apr_2021, may_2021, jun_2021, jul_2021, aug_2021, sep_2021)
+```
+
+Now let's get a glimpse of the data file:
+```{r glimpse-entire-file}
+glimpse(all_trips)
+```
+
+## INSPECT DATA AND PREPARE FOR ANALYSIS
+```{r}
+colnames(all_trips) # List of column names
+nrow(all_trips) # How many rows are in the data frame?
+dim(all_trips) # Dimensions of the data frame?
+head(all_trips) # See the first 6 rows of data frame. 
+tail(all_trips) # See last 6 rows of data frame.
+str(all_trips) # See list of columns and data types.
+summary(all_trips) # Statistical summary of data.
+glimpse(all_trips) # Summary
+```
+
+### Drop unused data
+```{r}
+all_trips <- all_trips %>%
+                select(-end_station_id)
+```
+
+### Check for null values
+
+```{r}
+colSums(is.na(all_trips))
+```
+
+### Handle missing data
+
+```{r}
+all_trips <- all_trips %>% drop_na()
+```
+
+Handle dates
+```{r add-date-data }
+all_trips$start_date <- as.Date(all_trips$started_at)
+
+all_trips$stop_date <- as.Date(all_trips$ended_at)
+
+all_trips$month <- format(as.Date(all_trips$start_date), '%m')
+
+all_trips$day <- format(as.Date(all_trips$start_date), '%d')
+
+all_trips$year <- format(as.Date(all_trips$start_date), '%Y')
+
+all_trips$day_of_week <- format(as.Date(all_trips$start_date), '%A')
+
+```
+
+### Add ride length and convert to numeric
+
+```{r ride-length}
+all_trips <- mutate(all_trips, ride_length = difftime(all_trips$ended_at, all_trips$started_at))
+
+all_trips$ride_length <- as.numeric(as.character(all_trips$ride_length))
+```
+```{r}
+is.numeric(all_trips$ride_length)
+```
+
+Create new dataset, remove bad data
+
+```{r}
+all_trips_v2 <- all_trips %>%
+    filter(ride_length > 0)
+```
+
+Convert ride length to minutes
+```{r}
+all_trips_v2 <- all_trips_v2 %>%
+  mutate(ride_length_in_minutes = ride_length/60)
+```
+
+ Most frequent start stations
+
+```{r most-popular-station}
+
+all_trips_v2 %>%
+  group_by(start_station_name) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  slice_max(count, n = 20) %>%
+  mutate(name = fct_reorder(start_station_name, count)) %>%
+  ggplot(aes(x = name, y = count, fill = name)) +
+  geom_col()+
+  scale_fill_hue(c = 40) +
+  coord_flip() +
+  theme_classic() +
+  theme(legend.position="none")
+```
+
+```{r most-popular-start-date}
+all_trips_v2 %>%
+  group_by(start_date) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  slice_max(count, n = 20) %>%
+  mutate(date = fct_reorder(as.factor(start_date), count)) %>%
+  ggplot(aes(x = date, y = count, fill = date)) +
+  geom_col()+
+  scale_fill_hue(c = 40) +
+  coord_flip() +
+  theme_classic() +
+  theme(legend.position="none")
+```
+```{r popular-stop-date}
+all_trips_v2 %>%
+  group_by(stop_date) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  slice_max(count, n = 20) %>%
+  mutate(date = fct_reorder(as.factor(stop_date), count)) %>%
+  ggplot(aes(x = date, y = count, fill = date)) +
+  geom_col()+
+  scale_fill_hue(c = 40) +
+  coord_flip() +
+  theme_classic() +
+  theme(legend.position="none")
+```
+
+User Type
+
+```{r}
+  # Plot casual vs member count
+ggplot(all_trips) + 
+  geom_bar(mapping = aes(x = member_casual, fill = member_casual)) +
+  theme_bw() +
+  theme(legend.position="none")
+
+```
+
+Trip duration
+
+```{r}
+# Visual 3: facet grid showing distribution of rides per bike type
+###########################
+  
+all_trips_v2 %>%
+  group_by(month, member_casual, rideable_type) %>%
+  filter(member_casual == 'casual') %>%
+  summarise(
+    number_of_rides = n(), 
+    average_duration = mean(ride_length)
+  ) %>%
+  ggplot( aes(x = month, y = average_duration, color = rideable_type) ) +
+  geom_point(size = 3) +
+  facet_wrap(~rideable_type)
+```
+ˆ
+```{r}
+# Visual 4: Facet grid showing casual vs members dist by bike type
+############################################
+
+all_trips_v2 %>%
+  group_by(month, member_casual, rideable_type) %>%
+  summarise(
+    number_of_rides = n(), 
+    average_duration = mean(ride_length)
+  ) %>%
+  ggplot( aes(x = month, y = number_of_rides, color = rideable_type) ) +
+  geom_point(size = 3) +
+  facet_grid(rideable_type ~ member_casual)
+```
+```{r}
+#############################################
+# Visual 5: Number of rides per month
+############################################
+all_trips_v2 %>%
+  group_by(member_casual, month) %>%
+  summarise(
+    number_of_rides = n()
+  ) %>%
+  ggplot(aes(x = month, y = number_of_rides, fill = member_casual)) +
+  geom_col(position = "dodge")
+```
+```{r}
+all_trips_v2 %>%
+  group_by(day_of_week, member_casual) %>%
+  summarise(
+    average_duration = mean(ride_length)
+  ) %>%
+  ggplot(aes(x = day_of_week, y = average_duration, fill = member_casual)) +
+  geom_col(position = "dodge")
+```
+```{r}
+all_trips_v2 %>%
+  group_by(day_of_week, member_casual) %>%
+  summarise(ride_length = mean(ride_length)) %>%
+  ggplot(aes(x = day_of_week, y = ride_length, fill = member_casual)) +
+  geom_col(position = "stack")
+```
+
+```{r}
+all_trips_v2 %>%
+  group_by(day_of_week, member_casual) %>%
+  summarise(
+    avg_ride_length = mean(ride_length), 
+    number_of_rides = n()
+  ) %>%
+  ggplot(aes(x = day_of_week, y = number_of_rides, fill = member_casual)) + 
+  geom_col(position = "dodge")
+```
+
+
