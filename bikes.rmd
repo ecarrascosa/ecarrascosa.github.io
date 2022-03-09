@@ -1,8 +1,9 @@
 ---
-title: "bikes"
+title: "Cyclistic Bike-Share Case Study"
 author: "Eduardo Carrascosa"
 date: "2/21/2022"
-output: bookdown::html_document2
+output: 
+bookdown :: html_document2: default
 tidy: styler
     df_print: paged
 ---
@@ -32,26 +33,40 @@ library(scales)
 library(ggthemes)
 
 ```
+# Case Study: How Does a Bike-Share Navigate Speedy Success?
+You are a junior data analyst working in the marketing analyst team at Cyclistic, a bike-share company in Chicago. The director of marketing believes the company’s future success depends on maximizing the number of annual memberships. Therefore, your team wants to understand how casual riders and annual members use Cyclistic bikes differently. From these insights, your team will design a new marketing strategy to convert casual riders into annual members. But first, Cyclistic executives must approve your recommendations, so they must be backed up with compelling data insights and professional data visualizations.
 
-# R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+## PHASE 1: Ask
+Three questions will guide the future marketing program:
+1. How do annual members and casual riders use Cyclistic bikes differently?
+2. Why would casual riders buy Cyclistic annual memberships?
+3. How can Cyclistic use digital media to influence casual riders to become members?
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+### Business Task
+Use the data to identify ways the ways that casual riders use bikes differently than members and recommend ways to convert casual riders to members.
+
+## PHASE 2: Prepare
+You will use Cyclistic’s historical trip data to analyze and identify trends. [Download the previous 12 months of Cyclistic trip data here.](https://divvy-tripdata.s3.amazonaws.com/index.html) (Note: The datasets have a different name because Cyclistic is a fictional company. For the purposes of this case study, the datasets are appropriate and will enable you to answer the business questions. The data has been made available by Motivate International Inc. under this [license](https://www.divvybikes.com/data-license-agreement.) This is public data that you can use to explore how different customer types are using Cyclistic bikes. But note that data-privacy issues prohibit you from using riders’ personally identifiable information. This means that you won’t be able to connect pass purchases to credit card numbers to determine if casual riders live in the Cyclistic service area or if they have purchased multiple single passes.
+
+### Key tasks 
+1. Download data and store it appropriately. 
+2. Identify how it’s organized. 
+3. Sort and filter the data.
 
 ```{r load-data}
-oct_2020 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202010-divvy-tripdata.csv ")
-nov_2020 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202011-divvy-tripdata.csv ")
-dec_2020 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202012-divvy-tripdata.csv ")
-jan_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202101-divvy-tripdata.csv ")
-feb_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202102-divvy-tripdata.csv ")
-mar_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202103-divvy-tripdata.csv ")
-apr_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202104-divvy-tripdata.csv ")
-may_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202105-divvy-tripdata.csv ")
-jun_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202106-divvy-tripdata.csv ")
-jul_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202107-divvy-tripdata.csv ")
-aug_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202108-divvy-tripdata.csv ")
-sep_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202109-divvy-tripdata.csv ")
+oct_2020 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202010-divvy-tripdata.csv")
+nov_2020 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202011-divvy-tripdata.csv")
+dec_2020 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202012-divvy-tripdata.csv")
+jan_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202101-divvy-tripdata.csv")
+feb_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202102-divvy-tripdata.csv")
+mar_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202103-divvy-tripdata.csv")
+apr_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202104-divvy-tripdata.csv")
+may_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202105-divvy-tripdata.csv")
+jun_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202106-divvy-tripdata.csv")
+jul_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202107-divvy-tripdata.csv")
+aug_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202108-divvy-tripdata.csv")
+sep_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202109-divvy-tripdata.csv")
 
 ```
 ## Peek at the datasets {.tabset}
