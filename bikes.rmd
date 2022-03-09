@@ -1,11 +1,12 @@
 ---
-title: "Cyclistic Bike-Share Case Study"
+title: "Cyclistic Bike-Share Case Study: How Does a Bike-Share Navigate Speedy Success?"
 author: "Eduardo Carrascosa"
 date: "2/21/2022"
 output: 
-bookdown :: html_document2: default
-tidy: styler
-    df_print: paged
+  html_document:
+    fig_height: 4
+    fig_width: 7
+    theme: cosmo
 ---
 
 ```{r setup, include=FALSE}
@@ -20,10 +21,6 @@ options(scipen = 100)
 ```
 
 ```{r install-libraries}
-```
-
-
-```{r install-libraries}
 library(tidyverse)
 library(DT)
 library(caret)
@@ -33,26 +30,6 @@ library(scales)
 library(ggthemes)
 
 ```
-# Case Study: How Does a Bike-Share Navigate Speedy Success?
-You are a junior data analyst working in the marketing analyst team at Cyclistic, a bike-share company in Chicago. The director of marketing believes the company’s future success depends on maximizing the number of annual memberships. Therefore, your team wants to understand how casual riders and annual members use Cyclistic bikes differently. From these insights, your team will design a new marketing strategy to convert casual riders into annual members. But first, Cyclistic executives must approve your recommendations, so they must be backed up with compelling data insights and professional data visualizations.
-
-
-## PHASE 1: Ask
-Three questions will guide the future marketing program:
-1. How do annual members and casual riders use Cyclistic bikes differently?
-2. Why would casual riders buy Cyclistic annual memberships?
-3. How can Cyclistic use digital media to influence casual riders to become members?
-
-### Business Task
-Use the data to identify ways the ways that casual riders use bikes differently than members and recommend ways to convert casual riders to members.
-
-## PHASE 2: Prepare
-You will use Cyclistic’s historical trip data to analyze and identify trends. [Download the previous 12 months of Cyclistic trip data here.](https://divvy-tripdata.s3.amazonaws.com/index.html) (Note: The datasets have a different name because Cyclistic is a fictional company. For the purposes of this case study, the datasets are appropriate and will enable you to answer the business questions. The data has been made available by Motivate International Inc. under this [license](https://www.divvybikes.com/data-license-agreement.) This is public data that you can use to explore how different customer types are using Cyclistic bikes. But note that data-privacy issues prohibit you from using riders’ personally identifiable information. This means that you won’t be able to connect pass purchases to credit card numbers to determine if casual riders live in the Cyclistic service area or if they have purchased multiple single passes.
-
-### Key tasks 
-1. Download data and store it appropriately. 
-2. Identify how it’s organized. 
-3. Sort and filter the data.
 
 ```{r load-data}
 oct_2020 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202010-divvy-tripdata.csv")
@@ -68,81 +45,8 @@ jul_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_da
 aug_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202108-divvy-tripdata.csv")
 sep_2021 <- read_csv("/Users/eduardocarrascosa/Desktop/Coursera/Capstone/bike_data/202109-divvy-tripdata.csv")
 
-```
-## Peek at the datasets {.tabset}
-
-### Oct 2020
-```{r results='asis'}
-datatable(head(oct_2020, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
-```
-
-### Nov 2020
-```{r results='asis'}
-datatable(head(nov_2020, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
-```
-
-### Dec 2020
-```{r results='asis'}
-datatable(head(dec_2020, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
 
 ```
-
-### Jan 2021
-```{r results='asis'}
-datatable(head(jan_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
-```
-
-### Feb 2021
-```{r results='asis'}
-datatable(head(feb_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
-```
-
-### Mar 2021
-```{r results='asis'}
-datatable(head(mar_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
-
-```
-
-### Apr 2021
-```{r results='asis'}
-datatable(head(apr_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
-
-```
-
-### May 2021
-```{r results='asis'}
-datatable(head(may_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
-
-```
-
-### Jun 2021
-```{r results='asis'}
-datatable(head(jun_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
-
-```
-
-### Jul 2021
-```{r results='asis'}
-datatable(head(jul_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
-
-```
-
-### Aug 2021
-```{r results='asis'}
-datatable(head(aug_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
-```
-
-### Sep 2021
-```{r results='asis'}
-datatable(head(sep_2021, 100), style="bootstrap", class="table-condensed", options = list(dom = 'tp',scrollX = TRUE))
-
-```
-
-## WRANGLE DATA AND COMBINE INTO A SINGLE FILE
-
-We need to check that all column names match in order to combine all the data into a single file. 
-
-
 ```{r column-name-check, results='hide'}
 colnames(oct_2020) 
 colnames(nov_2020)
@@ -158,8 +62,15 @@ colnames(aug_2021)
 colnames(sep_2021)
 ```
 
-All column names match, now let's peak at the dataset and look for incongruencies.
+## Overview
 
+In this project I will share my findings, including visualizations, key takeaways, and reccomendations
+from the Cyclistic Bike Share case study project that was my capstone project during Google's Coursera Data Analytics Certificate.
+For the purposes of this page I skip the earlier phases of the project and jump straight to sharing
+my insights and visualizations. 
+
+
+## Data visualizations
 ```{r glimpse, results='hide'}
 glimpse(oct_2020)
 glimpse(nov_2020)
@@ -175,7 +86,8 @@ glimpse(aug_2021)
 glimpse(sep_2021)
 ```
 
-Convert start/end times to datetime to match other files and let's combine the datasets in one
+
+
 
 ```{r combine-datasets}
 
@@ -204,13 +116,10 @@ all_trips <- bind_rows(oct_2020, nov_2020, dec_2020, jan_2021, feb_2021, mar_202
                         apr_2021, may_2021, jun_2021, jul_2021, aug_2021, sep_2021)
 ```
 
-Now let's get a glimpse of the data file:
-```{r glimpse-entire-file}
-glimpse(all_trips)
-```
 
-## INSPECT DATA AND PREPARE FOR ANALYSIS
-```{r}
+
+
+```{r results = 'hide'}
 colnames(all_trips) # List of column names
 nrow(all_trips) # How many rows are in the data frame?
 dim(all_trips) # Dimensions of the data frame?
@@ -221,25 +130,24 @@ summary(all_trips) # Statistical summary of data.
 glimpse(all_trips) # Summary
 ```
 
-### Drop unused data
 ```{r}
 all_trips <- all_trips %>%
                 select(-end_station_id)
 ```
 
-### Check for null values
 
-```{r}
+```{r results='hide'}
 colSums(is.na(all_trips))
 ```
 
-### Handle missing data
+
 
 ```{r}
 all_trips <- all_trips %>% drop_na()
 ```
 
-Handle dates
+
+
 ```{r add-date-data }
 all_trips$start_date <- as.Date(all_trips$started_at)
 
@@ -255,31 +163,94 @@ all_trips$day_of_week <- format(as.Date(all_trips$start_date), '%A')
 
 ```
 
-### Add ride length and convert to numeric
-
 ```{r ride-length}
 all_trips <- mutate(all_trips, ride_length = difftime(all_trips$ended_at, all_trips$started_at))
 
 all_trips$ride_length <- as.numeric(as.character(all_trips$ride_length))
 ```
-```{r}
-is.numeric(all_trips$ride_length)
-```
 
-Create new dataset, remove bad data
 
 ```{r}
 all_trips_v2 <- all_trips %>%
     filter(ride_length > 0)
 ```
 
-Convert ride length to minutes
 ```{r}
 all_trips_v2 <- all_trips_v2 %>%
   mutate(ride_length_in_minutes = ride_length/60)
 ```
 
- Most frequent start stations
+
+
+```{r results = 'hide'}
+# Descriptive analysis on ride_length (in seconds)
+mean(all_trips_v2$ride_length) # Straight average (total ride length / rides )
+median(all_trips_v2$ride_length) # Mid point ride length in sorted array of ride lengths
+max(all_trips_v2$ride_length) # Longest ride
+min(all_trips_v2$ride_length) # Shortest ride
+```
+
+
+```{r results = 'hide'}
+summary(all_trips_v2$ride_length)
+```
+
+
+```{r, results = 'hide'}
+#Group stats: max, min, mean, median by group
+all_trips_v2 %>%
+  group_by(member_casual) %>%
+  summarise(mean_ride_length = mean(ride_length),
+            median_ride_length = median(ride_length),
+            max_ride_length = max(ride_length),
+            min_ride_length = min(ride_length))
+```
+
+```{r}
+# Notice that the days of the week are out of order. Let's fix that.
+all_trips_v2$day_of_week <- ordered(all_trips_v2$day_of_week, levels=c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))
+```
+
+
+```{r results = 'hide'}
+all_trips_v2 %>%
+  group_by(day_of_week, member_casual) %>%
+  summarise(
+    avg_ride_length = mean(ride_length), 
+    number_of_rides = n()
+  ) 
+```
+
+```{r results = 'hide'}
+# Count members and casual riders
+all_trips %>%
+  group_by(member_casual)%>%
+  summarise(count = n())
+```
+### Casual users have longer ride durations on average than members
+```{r}
+all_trips_v2 %>%
+  group_by(day_of_week, member_casual) %>%
+  summarise(
+    average_duration = mean(ride_length)
+  ) %>%
+  ggplot(aes(x = day_of_week, y = average_duration, fill = member_casual)) +
+  geom_col(position = "dodge")
+```
+
+### Casual riders use bikes mostly in the weekends
+```{r}
+all_trips_v2 %>%
+  group_by(day_of_week, member_casual) %>%
+  summarise(
+    avg_ride_length = mean(ride_length), 
+    number_of_rides = n()
+  ) %>%
+  ggplot(aes(x = day_of_week, y = number_of_rides, fill = member_casual)) + 
+  geom_col(position = "dodge")
+```
+
+### Streeter Dr & Grand Ave was the most popular bike station
 
 ```{r most-popular-station}
 
@@ -297,6 +268,7 @@ all_trips_v2 %>%
   theme(legend.position="none")
 ```
 
+### The most popular start date was August 14th and 18 of the 20 busiest start dates occurred in the summer months
 ```{r most-popular-start-date}
 all_trips_v2 %>%
   group_by(start_date) %>%
@@ -311,33 +283,8 @@ all_trips_v2 %>%
   theme_classic() +
   theme(legend.position="none")
 ```
-```{r popular-stop-date}
-all_trips_v2 %>%
-  group_by(stop_date) %>%
-  summarise(count = n()) %>%
-  arrange(-count) %>%
-  slice_max(count, n = 20) %>%
-  mutate(date = fct_reorder(as.factor(stop_date), count)) %>%
-  ggplot(aes(x = date, y = count, fill = date)) +
-  geom_col()+
-  scale_fill_hue(c = 40) +
-  coord_flip() +
-  theme_classic() +
-  theme(legend.position="none")
-```
 
-User Type
-
-```{r}
-  # Plot casual vs member count
-ggplot(all_trips) + 
-  geom_bar(mapping = aes(x = member_casual, fill = member_casual)) +
-  theme_bw() +
-  theme(legend.position="none")
-
-```
-
-Trip duration
+### Docked bikes average the higher duration of the three types of bikes
 
 ```{r}
 # Visual 3: facet grid showing distribution of rides per bike type
@@ -354,7 +301,8 @@ all_trips_v2 %>%
   geom_point(size = 3) +
   facet_wrap(~rideable_type)
 ```
-ˆ
+
+### Classic bikes are the most popular type of bikes among both groups
 ```{r}
 # Visual 4: Facet grid showing casual vs members dist by bike type
 ############################################
@@ -369,6 +317,8 @@ all_trips_v2 %>%
   geom_point(size = 3) +
   facet_grid(rideable_type ~ member_casual)
 ```
+
+### The busiest months of the year are the summer months for both groups
 ```{r}
 #############################################
 # Visual 5: Number of rides per month
@@ -381,32 +331,18 @@ all_trips_v2 %>%
   ggplot(aes(x = month, y = number_of_rides, fill = member_casual)) +
   geom_col(position = "dodge")
 ```
-```{r}
-all_trips_v2 %>%
-  group_by(day_of_week, member_casual) %>%
-  summarise(
-    average_duration = mean(ride_length)
-  ) %>%
-  ggplot(aes(x = day_of_week, y = average_duration, fill = member_casual)) +
-  geom_col(position = "dodge")
-```
-```{r}
-all_trips_v2 %>%
-  group_by(day_of_week, member_casual) %>%
-  summarise(ride_length = mean(ride_length)) %>%
-  ggplot(aes(x = day_of_week, y = ride_length, fill = member_casual)) +
-  geom_col(position = "stack")
-```
-
-```{r}
-all_trips_v2 %>%
-  group_by(day_of_week, member_casual) %>%
-  summarise(
-    avg_ride_length = mean(ride_length), 
-    number_of_rides = n()
-  ) %>%
-  ggplot(aes(x = day_of_week, y = number_of_rides, fill = member_casual)) + 
-  geom_col(position = "dodge")
-```
 
 
+
+
+# Key Takeaways
+
+- Casual riders rent bikes mostly during the weekends
+- The average duration per trip is significantly higher for casual riders than for members
+- The number of rides per day for casual riders surpasses the number of rides per day for members during the summer months of June, July, and August probably due to tourism
+
+# Recommendations
+
+- Offer casual riders a free trial if they sign up for a membership.
+- Offer casual riders free additional minutes of ride time if they sign up for a membership since their rides tend to be longer.
+- Offer casual riders promotions during the summer months which is when their are more casual riders renting bikes.
