@@ -62,7 +62,7 @@ colnames(aug_2021)
 colnames(sep_2021)
 ```
 
-## Overview
+# Overview
 
 In this project I will share my findings, including visualizations, key takeaways, and reccomendations
 from the Cyclistic Bike Share case study project that was my capstone project during Google's Coursera Data Analytics Certificate.
@@ -70,7 +70,7 @@ For the purposes of this page I skip the earlier phases of the project and jump 
 my insights and visualizations. 
 
 
-## Data visualizations
+# Data visualizations
 ```{r glimpse, results='hide'}
 glimpse(oct_2020)
 glimpse(nov_2020)

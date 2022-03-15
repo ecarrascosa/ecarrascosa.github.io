@@ -1,0 +1,170 @@
+---
+title: "The Long-Term Value of a Customer at Netflix
+"
+author: "Eduardo Carrascosa"
+date: "2/2/2022"
+output: 
+  html_document:
+    fig_height: 4
+    fig_width: 7
+    theme: cosmo
+---
+
+The following table summarizes the above rules:
+
+![](https://i.imgur.com/h2E0TTS.png)
+
+
+
+## SUMMARY
+
+In this project, the development of a customer lifetime value simulation model for Netflix is described. In order to develop a customer lifetime value model (CLV) two crucial inputs are required: a fixed probability that a customer will remain loyal at the end of the year, also known as a retention rate and a mean profit per customer. Netflix does not publish its retention rate however enough data was gathered from publicly available sources, including the company’s annual financial report, to be able to develop this model using reasonable assumptions and estimates. The main model is developed using Monte Carlo simulation to estimate the years of loyalty and the CLV for different retention rates at Netflix. The model shows that Netflix tends to make a profit on every subscriber even for retention rates as low as 70%. However, the data shows that there are unprofitable customers at every level who quit in the first or second year; with more online streaming options than ever before, the probability that those customers will return is increasingly less certain. With Netflix’s marketing budget soaring to over $2.6 billion in 2019, the costs for acquiring new customers and retaining existing customers is rising and the limited ability of Netflix to increase the subscription price in this increasingly saturated market creates the need for Netflix to better understand customer behavior and value of a customer. In this project I provide insight into the value of a customer to Netflix that will allow the company to know how much a customer is worth and how much it can keep investing in attracting new subscribers or retaining existing subscribers in order to remain profitable.
+
+
+
+## 1.	INTRODUCTION
+
+What is a loyal customer worth to a company? This is an extremely important question for any company—but for Netflix, which encounters its most competitive market in its history, the answer to that question has never been more important. Netflix is a subscription-based online streaming service which offers online streaming of a library of films and television programs. As of April 2020, Netflix had over 182 million paid subscriptions worldwide, including 69 million in the United States. In recent years Netflix has seen its competitive landscape change dramatically. With big name companies like Apple, Amazon Prime Video, and Disney joining the subscription-based streaming business to compete with Netflix, the pool of prospective customers is getting smaller and the ability for customers to churn or cancel their subscription is increasing.  Netflix (and every company) knows that if a customer is dissatisfied with their product or service they are likely to switch and never return. This is known as customer churn. The loss in profit from customer churn can be enormous particularly because long-standing customers tend to be more profitable than new customers due to the acquisitions costs of acquiring a new customer. In this project I develop a customer loyalty simulation model to estimate the worth of a customer to Netflix as well as the number of years a customer will remain loyal and describe how sensitive both of those metrics are to retention rate. 
+Customer lifetime value (CLV) is generally deﬁned as the present value of all future proﬁts obtained from a customer over its lifetime relationship with the ﬁrm. The first year a customer signs up for service typically results in a loss to the company because of various administrative expenses as well as the acquisition cost. However, after the first year, the profit from a customer is typically positive, and can either increase, decrease or remain relatively constant depending on the company and industry. In this model, given that Netflix is a subscription-based business that tends to have a relatively constant subscription cost, the mean profit per customer has a normal probability distribution with a mean profit per customer of $49.70 per year with a 5% standard deviation. I calculate the average profit per customer using data from Netflix’s 2019 annual report and the detailed description of this calculation is described in the Project Setup section. This means that the profits and the variability of the profits remain relatively constant over the lifetime of a customer with the firm. There are several other important parameters in the CLV calculation that need to be estimated from historical data or chosen subjectively. Parameters such as the discount rate, the retention rate, and the acquisition cost of a new subscriber are described in detail in the next section. 
+In the end a company is driven by profitability and profitability is highly dependent on a company’s estimate of the value of a customer. In deciding how much to charge for a monthly subscription Netflix needs to know the behavior and the economic value of a customer. In this model we look at both of those metrics, namely the Net Present Value (NPV) of a typical subscriber for different retention rates and the years a typical subscriber will remain loyal. The objectives of the project are the following:
+•	To use Monte Carlo simulation to find the Net Present Value (NPV) of a typical customer and to see how this varies with the retention rate
+
+•	To use Monte Carlo simulation to find the number of years that a customer will remain loyal to Netflix and to see how this varies with the retention rate
+
+•	Provide insights into the distribution of both profitability and years of loyalty of subscribers for different levels of retention rates
+The rest of the project will describe in detail the data collection process, the modeling process, the results of our model and conclusions of the project. 
+
+## 2.	MAIN CHAPTER
+
+2.1 Project Setup
+
+The ‘CLV Model with Simulation’ worksheet illustrates a total of six simulations of the CLV model of 1,000 iterations each. The ‘CLV Model No Simulation’ worksheet describes a traditional CLV calculation using no simulation. In this section the project setup is described and includes a detailed description of the inputs, how they were obtained and what assumptions underlie their calculation, as well a description of the logic behind the implementation of the customer lifetime value formula using simulation in excel, and a description of the outputs of the model. 
+
+2.2 Inputs	
+
+The simplified mathematical algebraic formula for the CLV calculation assumes that the margin and retention rates remain constant over time. In our model we do assume that retention rates remain constant over time, even though we run different simulations for different retention rates, each of those simulations assumes a constant retention rate for all periods. The margin also remains constant over time since we don’t have a way of calculating how the margin might change over time for Netflix, but we do model the mean profit with a normal probability distribution. The idea behind the CLV formula is simple: Netflix should invest in a customer when the CLV is positive, that is, when the net present value (NPV) of future cash flows is greater than the acquisition cost per customer.
+
+Customer Lifetime Value Mathematical Formula:
+
+![](https://imgur.com/8C2Ys7S)
+     *slide from Profesor Damingir SFSU
+
+where:
+
+M: margin per customer 
+D: Discount rate
+R: Retention rate
+Ao: Acquisition cost per customer
+In our spreadsheet model, the inputs are in cells A4:B13. Next I will describe how the key inputs were obtained and the assumptions underlying the calculations.
+
+ 
+
+Margin/Profit per Customer
+
+The margin or profit per customer is the first crucial input in estimating the CLV. To calculate the mean profit per customer I first calculated the gross margin for Netflix in 2019. To calculate the gross margin I first obtained the annual revenue for 2019, then subtracted the cost of those revenues. The difference between revenue and cost is the margin on subscription revenues. Since the CLV model is at the customer level, I then divided the difference between revenue and cost by revenue to get the gross margin percentage. Gross Margin percentage is listed in cell B9. I then obtained the average monthly revenue per subscription as stated on the report which is $10.82 (listed in cell B6). Because our model is annual, we only check whether a customer left during the year but do not account for the particular time of the year the customer left. Thus, to annualize the revenue I multiply the average monthly subscription revenue by the number of purchases per year, which is 12, to get the average annual revenue per subscription. Finally, I multiply this number by the gross margin to get the Profit per Active Customer in cell B12. This mean profit per active customer per year has a normal probability distribution with mean of $49.70 and a standard deviation of 5%. 
+
+Gross Margin calculation (cell B9): 
+
+(calculation in thousands for 2019)
+Total revenues: 		$20,156,447
+Cost of revenues:		-$12,440,213
+
+Gross Margin:			$7,716,234
+
+Gross Margin(%):		$7,716,234 / $20,156,447 =  38.38% (cell B9)
+
+Mean Profit per Active Customer (cell B12):
+
+Average yearly revenue per subscription (B8) * Gross Margin (B9) = Mean Profit per Active Customer
+$129.84 * .3828 = $49.70 (cell B12)
+
+The revenues, cost of revenues, and average subscription revenue per customer were 
+obtained directly from Netflix 2019 financial annual report, specifically the Consolidated 
+
+Statements of Operations listed below.
+ 
+
+
+Retention rate
+
+The second crucial input in the CLV model is the retention rate. The retention rate is the fixes probability that a customer will remain loyal at the end of the year. However, one minus the Retention rate is the probability that the customer will switch to another company, or simply cancel the service, known as churn rate.
+There is no publicly available data about Netflix’s retention rate, however in the past analyst have estimated that the retention rate for Netflix is probably between the range of 80% to 90%. In this model we used a @RiskSimtable (D4:I4) in cell B4 to test six different retention rates ranging from 70% to 95% and we do one simulation of 1,000 iterations each to obtain the relevant outputs.  
+
+Acquisition Cost
+
+The third crucial input in the CLV model is the acquisition cost of a new customer. To estimate the cost to acquire a new customer I looked at the marketing expenses for 2019 which equaled $2.6B and divided it by the # of new subscribers that year. This formulation assumes that the entire marketing budget was devoted to acquiring new customers. 
+The description of the marketing line item from the financial disclosure mentions that the “marketing expenses consist primarily of advertising expenses and certain payments made to marketing partners….advertising expenses include promotional activities such as digital and television advertising”. In addition, there were about 15 million members that were not active paying customers. As part of their acquisition strategy Netflix may subsidize usage of the streaming service for a limited period of time to get the customer to join before charging them. Thus it is a reasonable assumption that the line item can be used to calculate the acquisition cost of a new customer.
+
+Acquisition Cost calculation (cell B10):
+
+	(in thousands)
+	Marketing Expenses:		$2,652,462	
+	# of New Susbscriptions: 	27,831
+
+	Acquisition cost per customer: $95.30.
+
+2.3 Simulation Model Development
+
+The model assumes a 30-year time horizon, however the profits stop if the customer switches loyalties or simply cancels the service before the end of the year. Based on the 2019 annual report we estimate the mean profit per active customer for a customer in its Nth year to be normally distributed with mean of $49.70 and standard deviation of 5%. This implies that the profits and the variability of profits remain relatively constant over time. For discounting purposes this model assumes that profits are generated at the middle of the respective years using a discount rate of 10%. This is not a crucial assumption, other assumptions on the timing of profits could be made instead. The crucial endpoint in the model is the retention rate, the probability that a customer remains loyal at the end of any given year. To see how much this key input affects the results, the model uses a RiskSimtable function in cell B4 to try the six possible retention rates shown in the retention table. This means that the number of simulations must be set to 6, one for each retention rate. 
+ 
+
+The model is straightforward. Column B uses the RAND function inside IF functions to generate a sequence of “No” values until a “Yes” is eventually generated, and then blanks are recorded every year after that, meaning that the customer has switched or cancelled the subscription and no further profits are obtained. 
+
+Column B is titled “Quits End of Year?”
+
+Column B is titled “Quits End of Year?”The formula for the first year (cell B17) is: IF(RAND()<$B$4,"No","Yes")
+
+Cell B4 is the retention rate for that particular simulation and the logical statement tests a randomly generated number between 0.0 and 1.0 and if that number is less than the retention rate the statement “No” fills the cell to indicate that the customer did not quit at the end of the year and the calculation can continue to next year, otherwise if the randomly generated number is higher than the retention rate that means the customer churned or cancelled the service and the statement “Yes” indicates that.
+For later years (cells B18:B46), the formula checks whether the customer has already switched, by checking for values of “Yes” or blanks like “” that signify that the customer already switched and no more calculations are needed. However, if the value of the previous cell is still “No” then the same RAND function inside an IF statement continues to generate values and determine if the value is within the retention rate or not to determine whether the customer remains loyal or not at the end of the year. 
+
+Cells(B18:B46) = IF(OR(B17="",B17<>"No"),"",IF(RAND()<$B$4,"No","Yes"))
+
+*Notice B17 is a relative address that increases by one as the year increases by one.
+
+Column C generates normally distributed profits, until the customer switches or cancels and then it records zeros. The normally distributed profits have a mean of $49.70 and standard deviation of 5% as mentioned in the inputs section. The ABS function is used for the standard deviation in case the mean profit is negative because the standard deviation cannot be negative. 
+
+Column D discounts each non-zero value from the middle of the corresponding year after the beginning of year one. 
+
+For example: the actual profit in year 5 is divided by (1 + Discount rate) raised to the 4.5 power.
+
+
+
+
+
+
+Simulation Output
+
+ 
+
+Two cells have been designated as @Risk output cells:
+
+1.	The Net Present Value (NPV) of profits in cell G16 =@RiskOutput("NPV") + SUM(D17:D46)-Acquisition_Costs
+
+2.	The Number of Years of Loyalty in cell G17 = @RiskOutput("Years loyal") + COUNTIF(B17:B46,"No")+COUNTIF(B17:B46,"Yes")
+
+The NPV of profits is the sum of the discounted profits for each year the customer remains active subscriber for Netflix minus the Acquisition Cost. According to the CLV formula the acquisition cost must be deducted from the NPV of profits. The Number of Years of Loyalty is simply the sum of the years that the customer is an member of Netflix (Sum of No’s and Yes’s in Column C).
+Descriptive Statistics
+A table with descriptive statistics is shown in cells F21:I26 with @Risk’s RiskMean function entered in cells H21:I26 using a second argument equal to the simulation number 1 to 6.  
+
+ex: Cell H16 = @RiskMean($G$16,F21), with G16 being the NPV Output 
+ex: Cell I25 = @RiskMean($G$17,F25), with G17 being the Years Loyal Output
+ 
+
+
+RESULTS
+
+
+Interpretation of Sensitivity of Customer Lifetime Value (CLV) and Customer Loyalty to Retention Rates
+
+The results from the CLV simulation model show that the customer’s lifetime value also known as the present value of all future cash flows (NPV) generated by a customer is highly sensitive to the retention rate. Likewise the number of years a customer remains loyal is sensitive to the retention rate, but to a lesser degree. The higher the retention rate the higher the CLV and the longer a customer will remain loyal. The CLV increases at an increasing rate as the retention rate goes from 90% to 95%. This five percent increase in retention rate causes the CLV to increase by almost $100 per customer and the number of years a customer will remain loyal to increase by approximately six years. That 5% increase in retention rate from 90% to 95% is approximately equivalent in terms of the impact on CLV and years of loyalty to a 20% increase in retention rate from 70% to 90%. 
+ 
+The last time that Netflix published its retention rate was in 2008 and it was close to 95%. However, it is highly unlikely that the retention rate is anywhere near 95% in today’s market. In recent years there has been a shift to online streaming services and big-name competitors have entered the market to compete for customers and content against Netflix—companies such as Amazon, Apple, and Disney. Recent analyst estimates put the retention rate in the 80% to 90% range. In this range the CLV is approximately $85 on the low end and $160 on the high end and the years of loyalty between five and nine years. If we look at the distribution of the profits at the 90% retention rate, the majority of customers remain loyal long enough for the company to make a profit. There is a small subset of customers who quit in the first year or two and can potentially create a net loss for the company, but the majority of the customers have a solid level of profitability that justify the company’s investment in acquiring new customers and retaining existing customers.
+ 
+In this range, the probability that a customer creates a net loss for the company drops to 34% on the low end and 24% on the high end. These are most likely customers who quit in their first or second year. In the best-case scenario where Netflix is able to achieve a 95% retention rate the probability that a customer creates a net loss drops to 9.8%. 
+A subscribers’ worth to Netflix at a 70% retention rate is $35.07 net of acquisition costs and will remain loyal an average of 3.35 years. If Netflix’s current retention rate is 70% it must keep the acquisition cost per new subscriber from increasing from the current cost of $95.30. If the acquisition cost per subscriber were to increase by $35.07 acquiring that new customer is not worth the investment to Netflix. This is a problematic scenario for Netflix given that the likelihood that acquisition costs will rise in the future is reasonable given the new competition for new subscribers from the likes of Disney, Amazon Prime Video, Apple, and HBO. As the pool of potential new subscribers gets smaller the acquisitions cost rise. The results also show that at 70% retention rate the probability of a customer costing the company as oppose to being profitable is 48.8%. 
+
+If Netflix’s retention rate is at 70% a better solution would be for Netflix to focus on a marketing retention strategy to increase its retention rate and therefore increase the economic value of its customers and the company.
+
+CONCLUSIONS
+
+Perhaps at one time in its history Netflix was able to achieve a retention rate close to 95%, but that was before the market was saturated with competitors and customers had less online streaming options than they do now. Only Netflix knows what their current retention rate is but using the results of my six simulation to they can tell exactly how many years a typical customer will remain loyal and what the economic value of each customer is. Based on this it can plan profitable projects for acquiring new customers, retaining existing customers, or acquiring new content.
