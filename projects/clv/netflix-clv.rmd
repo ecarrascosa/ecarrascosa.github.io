@@ -80,7 +80,7 @@ Statements of Operations listed below:
 
 ![](https://i.imgur.com/6A3ML02.png)
  
-### Retention rate
+#### Retention rate
 
 The second crucial input in the CLV model is the retention rate. The retention rate is the fixes probability that a customer will remain loyal at the end of the year. However, one minus the Retention rate is the probability that the customer will switch to another company, or simply cancel the service, known as churn rate.
 There is no publicly available data about Netflix’s retention rate, however in the past analyst have estimated that the retention rate for Netflix is probably between the range of 80% to 90%. In this model we used a @RiskSimtable (D4:I4) in cell B4 to test six different retention rates ranging from 70% to 95% and we do one simulation of 1,000 iterations each to obtain the relevant outputs. 
