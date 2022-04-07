@@ -1,0 +1,36 @@
+---
+title: "Identifying the VIP's"
+author: "Eduardo Carrascosa"
+date: "2/2/2022"
+output: 
+  html_document:
+    fig_height: 4
+    fig_width: 7
+    theme: cosmo
+---
+
+# Recenty-Frequency-Monetary (RFM) Analysis
+______
+
+Upscale specialty catalog retailer with a mix of “staple” items and seasonal, trendier items, using accumulated purchase history to increase the effectiveness and efficiency of marketing expenditures.
+
+Recency: how long ago the customer last made a purchase
+
+Frequency: how many purchases the customer has made  
+
+Monetary: how much each customer has spent in total  
+
+
+## PHASE 1: Business Task
+
+ 1. Conduct RFM analysis to assess the effectiveness of a customer targeting performance
+ 
+ 2. Draw cummulative profit, lift, and gains charts
+ 
+## PHASE 2: Prepare
+
+### Key tasks 
+
+1. Download data and store it appropriately. 
+2. Identify how it’s organized. 
+3. Sort and filter the data.

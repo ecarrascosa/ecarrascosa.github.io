@@ -16,7 +16,6 @@ output:
 In this project, the development of a customer lifetime value simulation model for Netflix is described. In order to develop a customer lifetime value model (CLV) two crucial inputs are required: a fixed probability that a customer will remain loyal at the end of the year, also known as a retention rate and a mean profit per customer. Netflix does not publish its retention rate however enough data was gathered from publicly available sources, including the company’s annual financial report, to be able to develop this model using reasonable assumptions and estimates. The main model is developed using Monte Carlo simulation to estimate the years of loyalty and the CLV for different retention rates at Netflix. The model shows that Netflix tends to make a profit on every subscriber even for retention rates as low as 70%. However, the data shows that there are unprofitable customers at every level who quit in the first or second year; with more online streaming options than ever before, the probability that those customers will return is increasingly less certain. With Netflix’s marketing budget soaring to over $2.6 billion in 2019, the costs for acquiring new customers and retaining existing customers is rising and the limited ability of Netflix to increase the subscription price in this increasingly saturated market creates the need for Netflix to better understand customer behavior and value of a customer. In this project I provide insight into the value of a customer to Netflix that will allow the company to know how much a customer is worth and how much it can keep investing in attracting new subscribers or retaining existing subscribers in order to remain profitable.
 
 
-
 ## 1.	Introduction
 
 What is a loyal customer worth to a company? This is an extremely important question for any company—but for Netflix, which encounters its most competitive market in its history, the answer to that question has never been more important. Netflix is a subscription-based online streaming service which offers online streaming of a library of films and television programs. As of April 2020, Netflix had over 182 million paid subscriptions worldwide, including 69 million in the United States. In recent years Netflix has seen its competitive landscape change dramatically. With big name companies like Apple, Amazon Prime Video, and Disney joining the subscription-based streaming business to compete with Netflix, the pool of prospective customers is getting smaller and the ability for customers to churn or cancel their subscription is increasing.  Netflix (and every company) knows that if a customer is dissatisfied with their product or service they are likely to switch and never return. This is known as customer churn. The loss in profit from customer churn can be enormous particularly because long-standing customers tend to be more profitable than new customers due to the acquisitions costs of acquiring a new customer. In this project I develop a customer loyalty simulation model to estimate the worth of a customer to Netflix as well as the number of years a customer will remain loyal and describe how sensitive both of those metrics are to retention rate. 
@@ -128,6 +127,8 @@ For example: the actual profit in year 5 is divided by (1 + Discount rate) raise
 
 #### Simulation Output
 
+![](https://i.imgur.com/OCZAVBK.png)
+
  
 Two cells have been designated as @Risk output cells:
 
@@ -138,10 +139,18 @@ Two cells have been designated as @Risk output cells:
 The NPV of profits is the sum of the discounted profits for each year the customer remains active subscriber for Netflix minus the Acquisition Cost. According to the CLV formula the acquisition cost must be deducted from the NPV of profits. The Number of Years of Loyalty is simply the sum of the years that the customer is an member of Netflix (Sum of No’s and Yes’s in Column C).
 
 ### Descriptive Statistics
+
 A table with descriptive statistics is shown in cells F21:I26 with @Risk’s RiskMean function entered in cells H21:I26 using a second argument equal to the simulation number 1 to 6.  
 
+![](https://i.imgur.com/cBC28Ju.png)
+
 ex: Cell H16 = @RiskMean($G$16,F21), with G16 being the NPV Output 
+
+![](https://i.imgur.com/v1cFAmn.png)
+
 ex: Cell I25 = @RiskMean($G$17,F25), with G17 being the Years Loyal Output
+
+![](https://i.imgur.com/LHsWuO3.png)
  
 ## Results
 
@@ -152,6 +161,8 @@ The results from the CLV simulation model show that the customer’s lifetime va
 ![](https://i.imgur.com/76YVjSG.png)
  
 The last time that Netflix published its retention rate was in 2008 and it was close to 95%. However, it is highly unlikely that the retention rate is anywhere near 95% in today’s market. In recent years there has been a shift to online streaming services and big-name competitors have entered the market to compete for customers and content against Netflix—companies such as Amazon, Apple, and Disney. Recent analyst estimates put the retention rate in the 80% to 90% range. In this range the CLV is approximately $85 on the low end and $160 on the high end and the years of loyalty between five and nine years. If we look at the distribution of the profits at the 90% retention rate, the majority of customers remain loyal long enough for the company to make a profit. There is a small subset of customers who quit in the first year or two and can potentially create a net loss for the company, but the majority of the customers have a solid level of profitability that justify the company’s investment in acquiring new customers and retaining existing customers.
+
+![](https://i.imgur.com/QAab9kH.png)
  
 In this range, the probability that a customer creates a net loss for the company drops to 34% on the low end and 24% on the high end. These are most likely customers who quit in their first or second year. In the best-case scenario where Netflix is able to achieve a 95% retention rate the probability that a customer creates a net loss drops to 9.8%. 
 A subscribers’ worth to Netflix at a 70% retention rate is $35.07 net of acquisition costs and will remain loyal an average of 3.35 years. If Netflix’s current retention rate is 70% it must keep the acquisition cost per new subscriber from increasing from the current cost of $95.30. If the acquisition cost per subscriber were to increase by $35.07 acquiring that new customer is not worth the investment to Netflix. This is a problematic scenario for Netflix given that the likelihood that acquisition costs will rise in the future is reasonable given the new competition for new subscribers from the likes of Disney, Amazon Prime Video, Apple, and HBO. As the pool of potential new subscribers gets smaller the acquisitions cost rise. The results also show that at 70% retention rate the probability of a customer costing the company as oppose to being profitable is 48.8%. 
