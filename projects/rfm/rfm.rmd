@@ -9,6 +9,18 @@ output:
     theme: cosmo
 ---
 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+  )
+  
+# remove scientific notiation
+options(scipen = 100)
+```
+
 # Recenty-Frequency-Monetary (RFM) Analysis
 ______
 
@@ -34,3 +46,146 @@ Monetary: how much each customer has spent in total
 1. Download data and store it appropriately. 
 2. Identify how it’s organized. 
 3. Sort and filter the data.
+
+```{r load-data}
+library(tidyverse) # metapackage of all tidyverse packages
+
+# Input data files are available in the read-only "../input/" directory
+# For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory
+
+
+# load data
+RFM <- read_csv("rfm.csv")
+```
+
+##  PHASE 3: Process
+
+### Key tasks¶
+1. Calculate total number of customers who receive the catalogs and the number of buyers
+2. Calculate the average response rate
+3. Calculate the response rate, lift, gain, and profit per cell
+
+```{r }
+# parameters of the problem
+avg_order <- 104.24
+pr_margin <- 0.5
+var_cost <- 1
+
+# Calculate total number of customers who receive the catalogs
+total_customers <- sum(RFM$customers)
+
+# Calculate total number of customers who ordered from the catalogs
+total_buyers <- sum((RFM$buyers))
+
+# Calculate the average response rate
+avg_rr <- total_buyers / total_customers
+
+# Calculate the response rate, lift, gain, and profit per cell
+RFM <- mutate(RFM, response_rate = buyers / customers )
+
+RFM <- mutate(RFM, lift = response_rate / avg_rr * 100 )
+
+RFM <- mutate(RFM, gain = buyers / total_buyers * 100)
+
+RFM <- mutate(RFM, profit = buyers * avg_order * pr_margin - var_cost * customers) # complete the statement
+
+total_profit <- sum(RFM$profit)
+```
+
+## PHASE 4: Analyze
+
+### Key Tasks
+
+1. What is the profit, lift, and gain if we only target the cells with response rate > 1.94?
+
+2. Calculate the cumulative lift, gain, and profit per cell in order to evaluate the performance of targeting.
+
+The average response rate if 2.45%, if we only target customers with a response rate 
+of 1.94% and above our response rate increases to 3.35%. Similary If we only target 
+the cells with a reponse rate of 1.94% or higher our profit increases by $12,088.72. 
+The lift for this group as measured by dividing the response rate by the average 
+response rate is 36% and we gain 73 customers.
+
+```{r }
+# check for number of obs
+RFM %>%
+  filter(response_rate > .0194) %>%
+  summarise(count = n())
+
+# set with response rate greater than 1.94%
+RR_GT_1_94 <- filter(RFM, response_rate > .0194) 
+
+# profit for the set, $3 less than max profit
+profit_1_94 <-sum(RR_GT_1_94$profit)
+
+# response rate for this group is 3.35 %
+rr_1_94 <- sum(RR_GT_1_94$buyers) / sum(RR_GT_1_94$customers)
+
+# lift for this group is 136
+lift_1_94 <- rr_1_94 / avg_rr * 100
+
+# gain is 73.89
+gain_1_94 <- sum(RR_GT_1_94$buyers) / total_buyers * 100
+
+# Calculate the cumulative lift, gain, and profit per cell in order to evaluate the performance of targeting
+
+RFM <- arrange(RFM, desc(response_rate)) # start by ranking the customers by response rate
+
+RFM <- mutate(RFM, cumsum_customer = cumsum(customers)) # cumsum customers
+
+RFM <- mutate(RFM, cumsum_buyers = cumsum(buyers) ) # cumsum buyers
+
+RFM <- mutate(RFM, customer_percent_rr = cumsum(customers) / total_customers * 100)
+
+RFM <- mutate(RFM, cumm_response_rate = cumsum(buyers) / cumsum(customers)) # allows targeting by response rate percentile
+
+RFM <- mutate(RFM, cum_lift_rr = cumsum(buyers) / cumsum(customers) / avg_rr * 100)
+
+RFM <- mutate(RFM, cum_gain_rr = cumsum(buyers) / total_buyers * 100)
+
+RFM <- mutate(RFM, cum_profit = cumsum(profit))
+
+RFM <- mutate(RFM, profit_percentile = cum_profit / max(cum_profit) * 100)
+```
+
+## PHASE 5: Share
+
+###  Key Tasks:
+ 1. Determine the best way to share your findings.
+ 2. Create effective data visualizations. 
+ 3. Present your findings. 
+ 4. Ensure your work is accessible.
+
+```{r}
+
+ # Plot the charts
+
+ ggplot(RFM) + geom_line(aes(x=customer_percent_rr, y=cum_profit))
+## This graph shows how much profit you capture by targeting different percentiles of the sample group. 
+## If I target top 25 percentile of customers ranked by avg response rate I capture over 30K in profits. 
+## If I target the 50 percentile of customers I maximize my profit at close to 40K
+## The goal is NOT ALWAYS maximize profit. Sometimes the goal may be to increase
+## market share. In that case I sacrifice some profit to increase market
+## share by going for a larger percentile even when the profit curve
+## goes down.
+
+ggplot(RFM) + geom_line(mapping = aes(x = customer_percent_rr, y = profit_percentile ))
+
+
+ggplot(RFM) + geom_line(aes(x=customer_percent_rr, y=cum_lift_rr))
+
+ggplot(RFM) + geom_line(aes(x=customer_percent_rr, y=cum_gain_rr))
+## If I target top 50% I get 75% of the customer that I get if I target the entire 95K sample.
+## If I target top 25 percentile of customers I get close to 50% of all the customers I get if
+## I target the entire 95K
+
+
+```
+
+## Key Takeaways
+
+* The top 10% of customers make 51% of profits, top 25% make 80% of profits
+* If we target the top 50% of customers we get 75% of the buyers we would get if we target the entire sample (gain)
+* If we target the top 10% of customers by response rate our response rate will be 5.83% and we capture 23% of the buyers (gain) that we would get if we target the entire sample.
+* If we target the top 10% percentile our lift in buyers is 2.37 times the sample.
+* Profit starts to decline at the 50th percentile 
