@@ -1,5 +1,5 @@
 ---
-title: "Identifying the VIP's"
+title: "Recency, Frequency, Monetary (RFM) Analysis"
 author: "Eduardo Carrascosa"
 date: "2/2/2022"
 output: 
@@ -60,7 +60,7 @@ RFM <- read_csv("rfm.csv")
 
 ##  PHASE 3: Process
 
-### Key tasks¶
+### Key tasks
 1. Calculate total number of customers who receive the catalogs and the number of buyers
 2. Calculate the average response rate
 3. Calculate the response rate, lift, gain, and profit per cell
